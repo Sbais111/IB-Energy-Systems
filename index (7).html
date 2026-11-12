@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy Systems: Drag the Terms | IB SEHS A.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1E293B; --muted: #475569; --line: #CBD5E1; --bg: #F8FAFC;
+    --pc: #B45309; --pc-t: #FFF7ED; --pc-b: #FED7AA;
+    --ag: #B91C1C; --ag-t: #FEF2F2; --ag-b: #FECACA;
+    --ox: #1D4ED8; --ox-t: #EFF6FF; --ox-b: #BFDBFE;
+    --lp: #0F766E; --lp-t: #F0FDFA; --lp-b: #99F6E4;
+    --pick: #A21CAF; --pick-t: #FDF4FF;
+    --bank-h: 0px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: 'Poppins', system-ui, sans-serif; color: var(--ink); background: var(--bg); padding-bottom: calc(var(--bank-h) + 24px); }
+  button { font: inherit; }
+
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .wrap { max-width: 1520px; margin: 0 auto; padding: 0 20px; }
+  .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; padding: 18px 0 12px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 2px 0 0; font-size: clamp(22px, 3vw, 32px); line-height: 1.15; }
+  .sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tab { border: 1px solid var(--line); background: #fff; border-radius: 10px 10px 0 0; border-bottom: none; padding: 10px 16px; cursor: pointer; font-weight: 600; color: var(--muted); }
+  .tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 14px 0; }
+  .btn { border: 2px solid var(--ink); background: #fff; color: var(--ink); border-radius: 10px; padding: 8px 14px; font-weight: 600; cursor: pointer; min-height: 44px; }
+  .btn.primary { background: var(--ink); color: #fff; }
+  .btn:hover { filter: brightness(0.95); }
+  .score { font-weight: 700; font-size: 16px; margin-left: auto; padding: 8px 14px; border-radius: 10px; background: #fff; border: 1px solid var(--line); }
+  .score.full { background: #DCFCE7; border-color: #15803D; color: #14532D; }
+
+  /* ---------- Page 1: four systems ---------- */
+  .systems { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 12px; }
+  .sys { display: grid; grid-row: span 9; grid-template-rows: subgrid; gap: 7px; margin-bottom: 12px; }
+  .sys-head { color: #fff; border-radius: 10px; padding: 10px 14px; }
+  .sys-head small { display: block; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+  .sys-head strong { font-size: 20px; line-height: 1.2; }
+  .cell { border-radius: 10px; border: 1px solid; padding: 8px 12px 10px; font-size: 15px; line-height: 1.9; }
+  .lbl { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); line-height: 1.6; }
+  .eg { display: block; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .steps { display: flex; flex-direction: column; gap: 2px; }
+  .step { background: #fff; border: 1px solid; border-radius: 8px; padding: 4px 10px; font-size: 14px; line-height: 1.9; }
+  .step b { margin-right: 4px; }
+  .atp { color: #fff; border-radius: 8px; padding: 6px 10px; font-size: 14px; font-weight: 700; text-align: center; line-height: 1.4; }
+  .step i { font-style: normal; font-weight: 600; }
+  .banner { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .card h2 span { flex: 0 0 auto !important; min-width: 30px; padding: 0 8px; }
+  .cycle { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; margin: 10px 0; }
+  .mol { background: var(--ink); color: #fff; font-weight: 700; border-radius: 999px; padding: 8px 16px; white-space: nowrap; }
+  .cyc-arrows { display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.6; text-align: center; }
+  .cyc-line { border: 1px dashed var(--line); border-radius: 8px; padding: 4px 8px; background: #F8FAFC; }
+  h2.sec { font-size: 20px; margin: 0 0 10px; }
+  .chain { display: flex; flex-direction: column; }
+  .node { background: #fff; border: 1.5px solid; border-radius: 10px; padding: 6px 10px 8px; font-size: 14px; line-height: 1.9; }
+  .node-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; line-height: 1.4; margin-bottom: 2px; }
+  .node-top b { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .where { font-size: 11px; font-weight: 600; border: 1px solid; border-radius: 999px; padding: 1px 8px; background: #fff; white-space: nowrap; }
+  .via { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 22px; font-size: 12px; font-weight: 700; }
+  .end { margin-top: auto; }
+  .atp small { display: block; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; opacity: .9; }
+  .atp .blank { color: var(--ink); }
+  .arrow { display: flex; justify-content: center; height: 14px; }
+
+  /* ---------- Page 2: scenarios ---------- */
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; font-size: 15px; line-height: 1.9; }
+  .card h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 18px; line-height: 1.3; }
+  .card h2 span { flex: 0 0 30px; height: 30px; border-radius: 8px; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .note { font-size: 13px; color: var(--muted); }
+  .timeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 6px 0; }
+  .seg { border: 2px solid; border-radius: 8px; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; }
+  .seg em { font-style: normal; font-size: 12px; font-weight: 600; color: var(--muted); line-height: 1.4; }
+  .times { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; font-size: 14px; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--line); padding: 4px 8px 4px 0; }
+  td { border-bottom: 1px solid #E2E8F0; padding: 4px 8px 4px 0; vertical-align: middle; }
+  .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+  .sublbl { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+
+  /* ---------- Blanks ---------- */
+  .blank {
+    display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
+    min-width: 7.5em; min-height: 32px; margin: 2px 2px; padding: 0 10px;
+    border: 2px dashed #94A3B8; border-radius: 8px; background: #F1F5F9; color: var(--ink);
+    font-size: 14px; font-weight: 600; line-height: 1.3; cursor: pointer; text-align: center;
+  }
+  .blank:empty::after { content: '\00a0'; }
+  .blank.filled { border-style: solid; border-color: var(--pick); background: var(--pick-t); color: #86198F; touch-action: none; }
+  .blank.over { outline: 3px solid var(--pick); outline-offset: 2px; background: #FAE8FF; }
+  .blank.ok { border-color: #15803D; background: #DCFCE7; color: #14532D; }
+  .blank.bad { border-color: #B91C1C; background: #FEE2E2; color: #7F1D1D; }
+  .blank.ok::before { content: '✓ '; white-space: pre; }
+  .blank.bad::before { content: '✗ '; white-space: pre; }
+  .blank.missing { border-color: #B91C1C; }
+  .selecting .blank:not(.filled) { border-color: var(--pick); }
+
+  /* ---------- Word bank ---------- */
+  .bank { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 2px solid var(--ink); box-shadow: 0 -8px 24px rgba(15,23,42,.12); z-index: 20; }
+  .bank-head { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .bank-head h3 { margin: 0; font-size: 15px; }
+  .bank-head p { margin: 0; font-size: 13px; color: var(--muted); flex: 1; }
+  .bank-toggle { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; min-height: 36px; }
+  .bank-body { max-height: 30vh; overflow-y: auto; padding: 4px 0 14px; }
+  .bank.collapsed .bank-body { display: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bank.over .bank-body { background: #FDF4FF; }
+  .chip {
+    border: 2px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px;
+    padding: 6px 14px; font-size: 15px; font-weight: 500; cursor: grab; touch-action: none; user-select: none; min-height: 40px;
+  }
+  .chip:hover { border-color: var(--pick); }
+  .chip.sel { background: var(--pick); border-color: var(--pick); color: #fff; }
+  .chip .n { display: inline-block; margin-left: 6px; font-size: 12px; font-weight: 700; background: #E2E8F0; color: var(--ink); border-radius: 999px; padding: 0 7px; }
+  .chip.sel .n { background: #fff; color: var(--pick); }
+  .done-msg { font-size: 14px; color: #15803D; font-weight: 600; }
+
+  .ghost { position: fixed; z-index: 100; pointer-events: none; transform: translate(-50%, -50%) rotate(-2deg); background: var(--pick); color: #fff; border-radius: 999px; padding: 7px 16px; font-weight: 600; box-shadow: 0 10px 24px rgba(0,0,0,.25); white-space: nowrap; }
+  body.dragging, body.dragging * { cursor: grabbing !important; user-select: none; }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 1100px) {
+    .systems { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cards, .banner { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .systems { grid-template-columns: 1fr; }
+    .timeline, .times { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .two { grid-template-columns: 1fr; }
+    .score { margin-left: 0; }
+    .bank-head p { display: none; }
+    .bank-toggle { margin-left: auto; }
+    .bank-body { max-height: 24vh; }
+    .tab { padding: 8px 12px; font-size: 14px; }
+    .chip { font-size: 14px; padding: 5px 12px; min-height: 36px; }
+  }
+  @media print { .bank, .toolbar, .tabs { display: none; } body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="eyebrow">IB SEHS · Topic A.2 · Energy systems</div>
+        <h1 id="pageTitle">Energy systems: fill the gaps</h1>
+        <div class="sub" id="pageSub"></div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" data-page="p1" aria-selected="true">1 · The four systems</button>
+        <button class="tab" role="tab" data-page="p2" aria-selected="false">2 · Exam scenarios</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="toolbar">
+    <button class="btn primary" id="checkBtn">Check answers</button>
+    <button class="btn" id="clearWrongBtn">Clear wrong answers</button>
+    <button class="btn" id="resetBtn">Reset page</button>
+    <button class="btn" id="showBtn">Show answers</button>
+    <div class="score" id="score" aria-live="polite"></div>
+  </div>
+  <section id="p1"></section>
+  <section id="p2" class="hidden"></section>
+</main>
+
+<div class="bank" id="bank">
+  <div class="wrap">
+    <div class="bank-head">
+      <h3>Word bank</h3>
+      <p>Drag a term into a space, or tap a term and then tap a space. Tap a filled space to send the term back.</p>
+      <button class="bank-toggle" id="bankToggle" aria-expanded="true">Hide</button>
+    </div>
+    <div class="bank-body"><div class="chips" id="chips"></div></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   CONTENT
+   [[term]] marks a blank. The term must match a word-bank term.
+   ========================================================= */
+const ARROW = c => `<div class="arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v11M2.5 7.5 7 12l4.5-4.5" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`;
+
+const SYSTEMS = [
+  { name: 'ATP–PC system', tag: 'Phosphagen · anaerobic', k: 'pc',
+    steps: [
+      { at: 'Sarcoplasm', t: 'Stored ATP → [[ADP]] + Pi + energy for muscle contraction. Only enough for ~2 s' },
+      { at: 'Sarcoplasm', via: 'ATP must be re-formed', t: 'Stored [[creatine phosphate]] (PC) is broken down by the enzyme [[creatine kinase]]: PC → [[creatine]] + Pi + energy' },
+      { at: 'Sarcoplasm', t: 'The energy released re-attaches Pi to ADP → ATP. The two linked reactions form a [[coupled]] reaction' }
+    ],
+    out: '[[1]] ATP per PC',
+    by: 'Creatine + Pi (no fatiguing by-products)',
+    rate: '[[fastest]]', yield: '[[very low]]',
+    intensity: '[[95–100%]] (maximal)',
+    duration: 'Dominant for ~[[10]] s of maximal effort',
+    fatigue: '[[PC depletion]]',
+    recovery: 'PC re-forms in [[30 s – 2 min]] of passive rest' },
+  { name: 'Anaerobic glycolysis', tag: 'Glycolytic · anaerobic', k: 'ag',
+    steps: [
+      { at: 'Sarcoplasm', t: 'Stored muscle [[glycogen]] → glucose by [[glycogenolysis]]' },
+      { at: 'Sarcoplasm', t: '[[glycolysis]] (~12 reactions): glucose → [[pyruvate]] + ATP' },
+      { at: 'Sarcoplasm', via: 'No O₂ available', t: 'Pyruvate → [[lactic acid]] (lactate + H⁺) using the enzyme [[lactate dehydrogenase]]' }
+    ],
+    out: 'Net [[2]] ATP per glucose',
+    by: 'Lactate + H⁺ ions',
+    rate: '[[fast]]', yield: '[[low]]',
+    intensity: '[[85–95%]] (near-maximal)',
+    duration: 'Dominant from ~10 s to ~[[90–120 s]]',
+    fatigue: 'Build-up of [[H⁺ ions]] lowers muscle pH once past the lactate inflection point',
+    recovery: 'Lactate → liver → glucose by [[gluconeogenesis]]' },
+  { name: 'Aerobic glycolysis', tag: 'Oxidative · aerobic', k: 'ox',
+    steps: [
+      { at: 'Sarcoplasm', t: 'Glycogen / [[glucose]] → pyruvate by glycolysis (+ 2 ATP)' },
+      { at: 'Mitochondria', via: 'O₂ present', t: 'Pyruvate enters the mitochondria and is converted to [[acetyl CoA]]' },
+      { at: 'Matrix', t: '[[Krebs cycle]]: releases CO₂ and H⁺ (+ 2 ATP). The coenzyme [[NAD]] carries H⁺ to the ETC' },
+      { at: 'Cristae', t: '[[electron transport chain]]: O₂ combines with H⁺ → water; [[32–34]] ATP' }
+    ],
+    out: '≈ [[38]] ATP per glucose',
+    by: 'H₂O + [[CO₂]] + heat',
+    rate: '[[slow]]', yield: '[[medium–high]]',
+    intensity: '[[75–85%]] (submaximal)',
+    duration: 'Dominant beyond ~2 min while [[glycogen]] lasts',
+    fatigue: '[[glycogen depletion]]',
+    recovery: 'Refill glycogen stores with [[carbohydrate]]' },
+  { name: 'Aerobic lipolysis', tag: 'Oxidative · aerobic', k: 'lp',
+    steps: [
+      { at: 'Cytoplasm', t: 'Stored [[triglycerides]] → glycerol + [[free fatty acids]] by [[lipolysis]] (enzyme: lipase)' },
+      { at: 'Mitochondria', via: 'O₂ present', t: 'Free fatty acids → acetyl CoA by [[beta-oxidation]], releasing many electrons' },
+      { at: 'Matrix', t: 'Acetyl CoA enters the [[Krebs cycle]]' },
+      { at: 'Cristae', t: 'Electrons pass to the [[electron transport chain]]; O₂ → H₂O; most ATP is made here' }
+    ],
+    out: '≈ [[147]] ATP per fatty acid (100–150)',
+    by: 'H₂O + CO₂ + heat',
+    rate: '[[slowest]]', yield: '[[high]]',
+    intensity: '[[low]] intensity (needs more O₂ per ATP)',
+    duration: '[[hours]]: fat stores are almost unlimited',
+    fatigue: 'ATP supply too slow for high intensity; [[dehydration]] and heat in long events',
+    recovery: 'Rehydrate and refuel; fat stores rarely run out' }
+];
+
+const BANNER = `
+<div class="banner">
+  <div class="card">
+    <h2><span>ATP</span>The energy currency</h2>
+    <div>ATP (adenosine triphosphate) is the [[energy currency]] of the cell.</div>
+    <div class="cycle">
+      <div class="mol">ATP</div>
+      <div class="cyc-arrows">
+        <div class="cyc-line">Last phosphate bond breaks, releasing energy for contraction →</div>
+        <div class="cyc-line">← Adding Pi back to ADP = [[phosphorylation]]</div>
+      </div>
+      <div class="mol">ADP + Pi</div>
+    </div>
+    <div>Muscles store only enough ATP for ~[[2]] s, so the energy systems must keep re-synthesising it.</div>
+  </div>
+  <div class="card">
+    <h2><span>A.2.3.1</span>Which system supplies the ATP?</h2>
+    <div>At rest and during extended periods of submaximal intensity, the [[oxidative]] system is the dominant supplier of ATP.</div>
+    <div>Short, high-intensity periods and sudden increases in intensity rely on [[anaerobic]] ATP production (phosphagen and anaerobic glycolysis).</div>
+    <div class="note">All three systems contribute at all times; the energy continuum shows their relative contribution. Biochemical details of the Krebs cycle and ETC are not assessed: know the sequence.</div>
+  </div>
+</div>`;
+
+function page1HTML() {
+  return BANNER + '<h2 class="sec">The chain reaction: from fuel to ATP</h2><div class="systems">' + SYSTEMS.map(s => {
+    const c = `var(--${s.k})`, t = `var(--${s.k}-t)`, b = `var(--${s.k}-b)`;
+    const cell = (lbl, html) => `<div class="cell" style="background:${t};border-color:${b}"><span class="lbl">${lbl}</span>${html}</div>`;
+    const via = (txt) => `<div class="via" style="color:${c}"><svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M7 1v13M2.5 9.5 7 14l4.5-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${txt ? `<span>${txt}</span>` : ''}</div>`;
+    const nodes = s.steps.map((st, i) =>
+      (i ? via(st.via) : '') +
+      `<div class="node" style="border-color:${b}"><div class="node-top"><b style="color:${c}">${i === 0 ? 'Start · fuel' : 'Step ' + (i + 1)}</b><span class="where" style="color:${c};border-color:${b}">${st.at}</span></div>${st.t}</div>`).join('');
+    return `<article class="sys" aria-label="${s.name}">
+      <div class="sys-head" style="background:${c}"><small>${s.tag}</small><strong>${s.name}</strong></div>
+      <div class="cell chain" style="background:${t};border-color:${b}">
+        <div class="steps">${nodes}</div>
+        <div class="end">${via('')}<div class="atp" style="background:${c}"><small>ATP produced</small>${s.out}</div></div>
+      </div>
+      ${cell('By-products', s.by)}
+      ${cell('Rate of ATP production', s.rate)}
+      ${cell('ATP yield', s.yield)}
+      ${cell('Intensity', s.intensity)}
+      ${cell('Duration', s.duration)}
+      ${cell('Fatiguing factor', s.fatigue)}
+      ${cell('Recovery', s.recovery)}
+    </article>`;
+  }).join('') + '</div>';
+}
+
+const PAGE2 = `
+<div class="cards">
+  <div class="card">
+    <h2><span>A</span>A 2 km rowing race (~6–7 min): which system is predominant?</h2>
+    <div class="note">Timeline not to scale.</div>
+    <div class="timeline">
+      <div class="seg" style="border-color:var(--pc);background:var(--pc-t)"><em>Start</em>[[ATP–PC]]</div>
+      <div class="seg" style="border-color:var(--ag);background:var(--ag-t)"><em>Early race</em>[[anaerobic glycolysis]]</div>
+      <div class="seg" style="border-color:var(--ox);background:var(--ox-t)"><em>Middle to end</em>[[aerobic glycolysis]]</div>
+      <div class="seg" style="border-color:var(--pc);border-style:dashed"><em>Sprint finish: more from</em>[[ATP–PC]]<em>and anaerobic glycolysis</em></div>
+    </div>
+    <div class="times">
+      <div>0 → [[10–20]] s</div>
+      <div>→ [[90–120]] s</div>
+      <div>→ finish line</div>
+      <div>high intensity at the end</div>
+    </div>
+    <div>All three systems contribute from the [[start]] of the race.</div>
+    <div>Overall, the 2 km race is primarily fuelled by the [[oxidative]] system.</div>
+    <div>The contribution depends on fuel availability, fitness level and race [[intensity]].</div>
+  </div>
+
+  <div class="card">
+    <h2><span>B</span>Which energy system dominates?</h2>
+    <table>
+      <thead><tr><th>Activity</th><th>Predominant energy system</th></tr></thead>
+      <tbody>
+        <tr><td>40 m sprint in 5.4 s</td><td>[[ATP–PC]]</td></tr>
+        <tr><td>High jump</td><td>[[ATP–PC]]</td></tr>
+        <tr><td>800 m running race</td><td>[[anaerobic glycolysis]]</td></tr>
+        <tr><td>5 km run</td><td>[[aerobic glycolysis]]</td></tr>
+        <tr><td>Late in a 10 km open-water swim, carbohydrate stores low</td><td>[[aerobic lipolysis]]</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:6px">30 s sprint: [[2]] ATP per glucose molecule, and lactic acid is produced.</div>
+    <div>90-min soccer match (most ATP): about [[38]] ATP per glucose molecule, with [[no]] lactic acid.</div>
+    <div>Rugby half-time: eat [[carbohydrates]] to fuel the second half.</div>
+  </div>
+
+  <div class="card">
+    <h2><span>C</span>Oxygen deficit and recovery</h2>
+    <div>At the start of exercise, O₂ demand is greater than O₂ supply. This shortfall is the [[oxygen deficit]].</div>
+    <div>The raised O₂ consumption after exercise that returns the body to rest is [[EPOC]].</div>
+    <div class="sublbl">Why does breathing stay high after a swim?</div>
+    <div class="two">
+      <div>Rebuild [[ATP and PC]] stores</div>
+      <div>Replenish O₂ in [[haemoglobin]] and myoglobin</div>
+      <div>Remove excess [[CO₂]] and reduce blood acidity</div>
+      <div>Convert [[lactate]] back into pyruvate</div>
+      <div>Regulate body [[temperature]]</div>
+      <div>Restore muscle and liver [[glycogen]]</div>
+    </div>
+    <div>A trained swimmer restores [[PC]] faster than an untrained swimmer.</div>
+  </div>
+
+  <div class="card">
+    <h2><span>D</span>VO₂ max and the lactate inflection point</h2>
+    <div>The maximum rate at which O₂ can be taken up and used is [[VO₂ max]].</div>
+    <div>To compare two athletes fairly, express it relative to [[body mass]] (mL·kg⁻¹·min⁻¹).</div>
+    <div>VO₂ max peaks at [[maturation]] and then [[declines]] with age.</div>
+    <div>Females generally have a [[lower]] VO₂ max than males of the same age.</div>
+    <div>Aerobic training [[slows]] the rate of decline with age.</div>
+    <div>Initial gains in VO₂ max are greatest in [[untrained]] individuals.</div>
+    <div>The lactate inflection point is delayed by [[oxygen]] availability and an efficient [[cardiovascular]] system.</div>
+  </div>
+</div>`;
+
+const PAGES = {
+  p1: { title: 'Energy systems: the ATP chain reaction', sub: 'A.2.3.1 The body relies on the phosphagen, glycolytic and oxidative systems for energy production to sustain life and physical activity. Drag each term into the correct space.', html: page1HTML() },
+  p2: { title: 'Applying the terms: exam scenarios', sub: 'Each scenario is taken from a past IB question. Drag each term into the correct space.', html: PAGE2 }
+};
+
+/* =========================================================
+   BUILD
+   ========================================================= */
+const ANSWERS = { p1: [], p2: [] };
+const ORDER = { p1: [], p2: [] };
+const STORE_KEY = 'sehs-energy-dragdrop-v3';
+let state = { page: 'p1', placed: { p1: {}, p2: {} }, collapsed: false };
+
+try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && s.placed) state = Object.assign(state, s); } catch (e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+for (const p of ['p1', 'p2']) {
+  let i = 0;
+  const html = PAGES[p].html.replace(/\[\[(.+?)\]\]/g, (_, term) => {
+    const id = `${p}-${i++}`;
+    ANSWERS[p].push(term);
+    return `<button type="button" class="blank" data-id="${id}" aria-label="Empty space"></button>`;
+  });
+  document.getElementById(p).innerHTML = html;
+  // Word bank in alphabetical order (numbers first, ignoring capitals)
+  ORDER[p] = [...new Set(ANSWERS[p])].sort((a, b) => a.localeCompare(b, 'en', { numeric: true, sensitivity: 'base' }));
+}
+
+const answerOf = id => { const [p, n] = id.split('-'); return ANSWERS[p][+n]; };
+const blanks = () => document.querySelectorAll(`#${state.page} .blank`);
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function remaining(p) {
+  const counts = {};
+  ANSWERS[p].forEach(t => counts[t] = (counts[t] || 0) + 1);
+  Object.values(state.placed[p]).forEach(t => counts[t]--);
+  return counts;
+}
+
+function renderBank() {
+  const p = state.page, counts = remaining(p), box = document.getElementById('chips');
+  box.innerHTML = '';
+  let left = 0;
+  ORDER[p].forEach(t => {
+    const n = counts[t] || 0;
+    if (n <= 0) return;
+    left += n;
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip' + (selected === t ? ' sel' : ''); b.dataset.term = t;
+    b.innerHTML = esc(t) + (n > 1 ? `<span class="n" aria-label="${n} left">×${n}</span>` : '');
+    box.appendChild(b);
+  });
+  if (!left) box.innerHTML = '<span class="done-msg">All terms placed. Press “Check answers”.</span>';
+  if (selected && !(counts[selected] > 0)) setSelected(null);
+}
+
+function renderBlanks() {
+  const placed = state.placed[state.page];
+  blanks().forEach(el => {
+    const t = placed[el.dataset.id];
+    el.textContent = t || '';
+    el.dataset.term = t || '';
+    el.classList.toggle('filled', !!t);
+    el.setAttribute('aria-label', t ? `Filled with ${t}. Activate to remove.` : 'Empty space');
+  });
+}
+
+function renderScore(text, full) {
+  const s = document.getElementById('score');
+  const total = ANSWERS[state.page].length, filled = Object.keys(state.placed[state.page]).length;
+  s.textContent = text || `${filled} / ${total} placed`;
+  s.classList.toggle('full', !!full);
+}
+
+function render() {
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.page === state.page));
+  ['p1', 'p2'].forEach(p => document.getElementById(p).classList.toggle('hidden', p !== state.page));
+  document.getElementById('pageTitle').textContent = PAGES[state.page].title;
+  document.getElementById('pageSub').textContent = PAGES[state.page].sub;
+  renderBlanks(); renderBank(); renderScore(); setBankHeight();
+}
+
+function clearMarks() { blanks().forEach(b => b.classList.remove('ok', 'bad', 'missing')); }
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+let selected = null;
+function setSelected(t) {
+  selected = t;
+  document.body.classList.toggle('selecting', !!t);
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('sel', c.dataset.term === t));
+}
+
+function place(id, term, fromId) {
+  const placed = state.placed[state.page];
+  if (fromId === id) return;
+  const existing = placed[id];
+  placed[id] = term;
+  if (fromId) {
+    if (existing) placed[fromId] = existing; else delete placed[fromId];
+  }
+  clearMarks(); save(); renderBlanks(); renderBank(); renderScore();
+}
+
+function unplace(id) {
+  delete state.placed[state.page][id];
+  clearMarks(); save(); renderBlanks(); renderBank(); renderScore();
+}
+
+function check() {
+  let right = 0;
+  const all = blanks();
+  all.forEach(el => {
+    el.classList.remove('ok', 'bad', 'missing');
+    const t = state.placed[state.page][el.dataset.id];
+    if (!t) { el.classList.add('missing'); return; }
+    if (t === answerOf(el.dataset.id)) { el.classList.add('ok'); right++; } else el.classList.add('bad');
+  });
+  renderScore(`${right} / ${all.length} correct`, right === all.length);
+}
+
+document.getElementById('checkBtn').onclick = check;
+document.getElementById('clearWrongBtn').onclick = () => {
+  const placed = state.placed[state.page];
+  blanks().forEach(el => { const t = placed[el.dataset.id]; if (t && t !== answerOf(el.dataset.id)) delete placed[el.dataset.id]; });
+  clearMarks(); save(); render();
+};
+document.getElementById('resetBtn').onclick = () => {
+  if (!confirm('Clear every answer on this page?')) return;
+  state.placed[state.page] = {}; clearMarks(); save(); render();
+};
+document.getElementById('showBtn').onclick = () => {
+  if (!confirm('Fill in all the correct answers on this page?')) return;
+  const placed = state.placed[state.page] = {};
+  blanks().forEach(el => placed[el.dataset.id] = answerOf(el.dataset.id));
+  save(); render(); check();
+};
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  state.page = t.dataset.page; setSelected(null); save(); render(); window.scrollTo({ top: 0 });
+});
+document.getElementById('bankToggle').onclick = () => { state.collapsed = !state.collapsed; save(); setBankHeight(); };
+
+function setBankHeight() {
+  const bank = document.getElementById('bank'), tog = document.getElementById('bankToggle');
+  bank.classList.toggle('collapsed', state.collapsed);
+  tog.textContent = state.collapsed ? 'Show' : 'Hide';
+  tog.setAttribute('aria-expanded', !state.collapsed);
+  document.documentElement.style.setProperty('--bank-h', bank.offsetHeight + 'px');
+}
+window.addEventListener('resize', setBankHeight);
+
+/* =========================================================
+   TAP / CLICK (also keyboard: Enter or Space)
+   ========================================================= */
+let suppressClick = false;
+document.addEventListener('click', e => {
+  if (suppressClick) { suppressClick = false; return; }
+  const chip = e.target.closest('.chip');
+  if (chip) { setSelected(selected === chip.dataset.term ? null : chip.dataset.term); return; }
+  const blank = e.target.closest('.blank');
+  if (blank) {
+    if (selected) { const t = selected; place(blank.dataset.id, t, null); setSelected(remaining(state.page)[t] > 0 ? t : null); }
+    else if (blank.classList.contains('filled')) unplace(blank.dataset.id);
+  }
+});
+
+/* =========================================================
+   DRAG AND DROP (pointer events: mouse, touch and pen)
+   ========================================================= */
+let drag = null, ghost = null, overEl = null, scrollRaf = null, lastY = 0;
+
+document.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  const src = e.target.closest('.chip, .blank.filled');
+  if (!src) return;
+  drag = { src, term: src.dataset.term, fromId: src.classList.contains('blank') ? src.dataset.id : null,
+           x0: e.clientX, y0: e.clientY, started: false };
+});
+
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (!drag.started) {
+    if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 6) return;
+    drag.started = true;
+    ghost = document.createElement('div'); ghost.className = 'ghost'; ghost.textContent = drag.term;
+    document.body.appendChild(ghost); document.body.classList.add('dragging');
+    setSelected(null);
+    lastY = e.clientY;
+    autoScroll();
+  }
+  e.preventDefault();
+  lastY = e.clientY;
+  // Only start auto-scrolling down once the term has been lifted clear of the word bank
+  if (lastY < document.getElementById('bank').getBoundingClientRect().top - 90) drag.cleared = true;
+  ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px';
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  const target = under && (under.closest('.blank') || under.closest('.bank'));
+  if (target !== overEl) {
+    if (overEl) overEl.classList.remove('over');
+    overEl = target;
+    if (overEl) overEl.classList.add('over');
+  }
+}, { passive: false });
+
+function endDrag(e, cancelled) {
+  if (!drag) return;
+  if (drag.started) {
+    suppressClick = true; setTimeout(() => suppressClick = false, 0);
+    if (!cancelled && overEl) {
+      if (overEl.classList.contains('blank')) place(overEl.dataset.id, drag.term, drag.fromId);
+      else if (drag.fromId) unplace(drag.fromId);
+    }
+    if (overEl) overEl.classList.remove('over');
+    ghost.remove(); ghost = null; overEl = null;
+    document.body.classList.remove('dragging');
+    cancelAnimationFrame(scrollRaf);
+  }
+  drag = null;
+}
+document.addEventListener('pointerup', e => endDrag(e, false));
+document.addEventListener('pointercancel', e => endDrag(e, true));
+
+function autoScroll() {
+  if (!drag || !drag.started) return;
+  const bankTop = document.getElementById('bank').getBoundingClientRect().top;
+  const edge = 70;
+  if (lastY < edge) window.scrollBy({ top: -14, behavior: 'instant' });
+  else if (drag.cleared && lastY > bankTop - edge && lastY < bankTop) window.scrollBy({ top: 14, behavior: 'instant' });
+  scrollRaf = requestAnimationFrame(autoScroll);
+}
+
+render();
+</script>
+</body>
+</html>

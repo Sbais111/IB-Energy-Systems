@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The ATP Chain Reaction | IB SEHS A.2.3.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1E293B; --muted: #475569; --line: #CBD5E1; --bg: #F8FAFC;
+    --pc: #B45309; --pc-t: #FFF7ED; --pc-b: #FED7AA;
+    --ag: #B91C1C; --ag-t: #FEF2F2; --ag-b: #FECACA;
+    --ox: #1D4ED8; --ox-t: #EFF6FF; --ox-b: #BFDBFE;
+    --lp: #0F766E; --lp-t: #F0FDFA; --lp-b: #99F6E4;
+    --pick: #A21CAF; --pick-t: #FDF4FF;
+    --bank-h: 0px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Poppins', system-ui, sans-serif; color: var(--ink); background: var(--bg); padding-bottom: calc(var(--bank-h) + 24px); }
+  button { font: inherit; }
+
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .wrap { max-width: 1520px; margin: 0 auto; padding: 0 20px; }
+  .top { padding: 18px 0 14px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 2px 0 0; font-size: clamp(22px, 3vw, 34px); line-height: 1.15; }
+  .sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 14px 0; }
+  .btn { border: 2px solid var(--ink); background: #fff; color: var(--ink); border-radius: 10px; padding: 8px 14px; font-weight: 600; cursor: pointer; min-height: 44px; }
+  .btn.primary { background: var(--ink); color: #fff; }
+  .btn:hover { filter: brightness(0.95); }
+  .score { font-weight: 700; font-size: 16px; margin-left: auto; padding: 8px 14px; border-radius: 10px; background: #fff; border: 1px solid var(--line); }
+  .score.full { background: #DCFCE7; border-color: #15803D; color: #14532D; }
+
+  /* ---------- The four chains ---------- */
+  .systems { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+  .sys { display: flex; flex-direction: column; gap: 8px; }
+  .sys-head { color: #fff; border-radius: 10px; padding: 10px 14px; }
+  .sys-head small { display: block; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+  .sys-head strong { font-size: 21px; line-height: 1.2; }
+  .chain { flex: 1 1 auto; border: 1px solid; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; }
+  .node { background: #fff; border: 1.5px solid; border-radius: 10px; padding: 7px 12px 9px; font-size: 15px; line-height: 2; }
+  .node-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; line-height: 1.4; margin-bottom: 2px; }
+  .node-top b { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .where { font-size: 11px; font-weight: 600; border: 1px solid; border-radius: 999px; padding: 1px 8px; background: #fff; white-space: nowrap; }
+  .via { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 26px; font-size: 13px; font-weight: 700; }
+  .end { margin-top: auto; }
+  .atp { color: #fff; border-radius: 10px; padding: 8px 12px 10px; font-size: 15px; font-weight: 700; text-align: center; line-height: 1.9; }
+  .atp small { display: block; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; line-height: 1.4; }
+  .atp .blank { background: #fff; color: var(--ink); border-color: #fff; }
+
+  /* ---------- Blanks ---------- */
+  .blank {
+    display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
+    min-width: 7.5em; min-height: 32px; margin: 2px; padding: 0 10px;
+    border: 2px dashed #94A3B8; border-radius: 8px; background: #F1F5F9; color: var(--ink);
+    font-size: 14px; font-weight: 600; line-height: 1.3; cursor: pointer; text-align: center;
+  }
+  .blank:empty::after { content: '\00a0'; }
+  .blank.filled { border-style: solid; border-color: var(--pick); background: var(--pick-t); color: #86198F; touch-action: none; }
+  .blank.over { outline: 3px solid var(--pick); outline-offset: 2px; background: #FAE8FF; }
+  .blank.ok, .atp .blank.ok { border-color: #15803D; background: #DCFCE7; color: #14532D; }
+  .blank.bad, .atp .blank.bad { border-color: #B91C1C; background: #FEE2E2; color: #7F1D1D; }
+  .blank.ok::before { content: '✓ '; white-space: pre; }
+  .blank.bad::before { content: '✗ '; white-space: pre; }
+  .blank.missing { border-color: #B91C1C; }
+  .selecting .blank:not(.filled) { border-color: var(--pick); }
+
+  /* ---------- Word bank ---------- */
+  .bank { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 2px solid var(--ink); box-shadow: 0 -8px 24px rgba(15,23,42,.12); z-index: 20; }
+  .bank-head { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .bank-head h2 { margin: 0; font-size: 15px; }
+  .bank-head p { margin: 0; font-size: 13px; color: var(--muted); flex: 1; }
+  .bank-toggle { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; min-height: 36px; }
+  .bank-body { max-height: 30vh; overflow-y: auto; padding: 4px 0 14px; }
+  .bank.collapsed .bank-body { display: none; }
+  .bank.over .bank-body { background: #FDF4FF; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    border: 2px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px;
+    padding: 6px 14px; font-size: 15px; font-weight: 500; cursor: grab; touch-action: none; user-select: none; min-height: 40px;
+  }
+  .chip:hover { border-color: var(--pick); }
+  .chip.sel { background: var(--pick); border-color: var(--pick); color: #fff; }
+  .chip .n { display: inline-block; margin-left: 6px; font-size: 12px; font-weight: 700; background: #E2E8F0; color: var(--ink); border-radius: 999px; padding: 0 7px; }
+  .chip.sel .n { background: #fff; color: var(--pick); }
+  .done-msg { font-size: 14px; color: #15803D; font-weight: 600; }
+
+  .ghost { position: fixed; z-index: 100; pointer-events: none; transform: translate(-50%, -50%) rotate(-2deg); background: var(--pick); color: #fff; border-radius: 999px; padding: 7px 16px; font-weight: 600; box-shadow: 0 10px 24px rgba(0,0,0,.25); white-space: nowrap; }
+  body.dragging, body.dragging * { cursor: grabbing !important; user-select: none; }
+
+  @media (max-width: 1100px) { .systems { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .systems { grid-template-columns: 1fr; }
+    .score { margin-left: 0; }
+    .bank-head p { display: none; }
+    .bank-toggle { margin-left: auto; }
+    .bank-body { max-height: 24vh; }
+    .chip { font-size: 14px; padding: 5px 12px; min-height: 36px; }
+  }
+  @media print { .bank, .toolbar { display: none; } body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap top">
+    <div class="eyebrow">IB SEHS · A.2.3.1 · Energy systems</div>
+    <h1>The ATP chain reaction: from fuel to ATP</h1>
+    <div class="sub">Follow each chain from its starting fuel to the ATP it produces. Drag each term into the correct space.</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="toolbar">
+    <button class="btn primary" id="checkBtn">Check answers</button>
+    <button class="btn" id="clearWrongBtn">Clear wrong answers</button>
+    <button class="btn" id="resetBtn">Reset</button>
+    <button class="btn" id="showBtn">Show answers</button>
+    <div class="score" id="score" aria-live="polite"></div>
+  </div>
+  <section id="page"></section>
+</main>
+
+<div class="bank" id="bank">
+  <div class="wrap">
+    <div class="bank-head">
+      <h2>Word bank</h2>
+      <p>Drag a term into a space, or tap a term and then tap a space. Tap a filled space to send the term back.</p>
+      <button class="bank-toggle" id="bankToggle" aria-expanded="true">Hide</button>
+    </div>
+    <div class="bank-body"><div class="chips" id="chips"></div></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   CONTENT: [[term]] marks a space. Terms build the word bank.
+   ========================================================= */
+const SYSTEMS = [
+  { name: 'ATP–PC system', tag: 'Phosphagen · anaerobic', k: 'pc',
+    steps: [
+      { at: 'Sarcoplasm', t: 'Stored ATP → [[ADP]] + Pi + energy for muscle contraction. Only enough for ~2 s' },
+      { at: 'Sarcoplasm', via: 'ATP must be re-formed', t: 'Stored [[creatine phosphate]] (PC) is broken down by the enzyme [[creatine kinase]]: PC → [[creatine]] + Pi + energy' },
+      { at: 'Sarcoplasm', t: 'The energy released re-attaches Pi to ADP → ATP. The two linked reactions form a [[coupled]] reaction' }
+    ],
+    out: '[[1]] ATP per PC' },
+  { name: 'Anaerobic glycolysis', tag: 'Glycolytic · anaerobic', k: 'ag',
+    steps: [
+      { at: 'Sarcoplasm', t: 'Stored muscle [[glycogen]] → glucose by [[glycogenolysis]]' },
+      { at: 'Sarcoplasm', t: '[[glycolysis]] (~12 reactions): glucose → [[pyruvate]] + ATP' },
+      { at: 'Sarcoplasm', via: 'No O₂ available', t: 'Pyruvate → [[lactic acid]] (lactate + H⁺) using the enzyme [[lactate dehydrogenase]]' }
+    ],
+    out: 'Net [[2]] ATP per glucose' },
+  { name: 'Aerobic glycolysis', tag: 'Oxidative · aerobic', k: 'ox',
+    steps: [
+      { at: 'Sarcoplasm', t: 'Glycogen / [[glucose]] → pyruvate by glycolysis (+ 2 ATP)' },
+      { at: 'Mitochondria', via: 'O₂ present', t: 'Pyruvate enters the mitochondria and is converted to [[acetyl CoA]]' },
+      { at: 'Matrix', t: '[[Krebs cycle]]: releases CO₂ and H⁺ (+ 2 ATP). The coenzyme [[NAD]] carries H⁺ to the ETC' },
+      { at: 'Cristae', t: '[[electron transport chain]]: O₂ combines with H⁺ → water; [[32–34]] ATP' }
+    ],
+    out: '≈ [[38]] ATP per glucose' },
+  { name: 'Aerobic lipolysis', tag: 'Oxidative · aerobic', k: 'lp',
+    steps: [
+      { at: 'Cytoplasm', t: 'Stored [[triglycerides]] → glycerol + [[free fatty acids]] by [[lipolysis]] (enzyme: lipase)' },
+      { at: 'Mitochondria', via: 'O₂ present', t: 'Free fatty acids → acetyl CoA by [[beta-oxidation]], releasing many electrons' },
+      { at: 'Matrix', t: 'Acetyl CoA enters the [[Krebs cycle]]' },
+      { at: 'Cristae', t: 'Electrons pass to the [[electron transport chain]]; O₂ → H₂O; most ATP is made here' }
+    ],
+    out: '≈ [[147]] ATP per fatty acid (100–150)' }
+];
+
+const ARROW = (c, txt) => `<div class="via" style="color:${c}"><svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M7 1v13M2.5 9.5 7 14l4.5-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${txt ? `<span>${txt}</span>` : ''}</div>`;
+
+function pageHTML() {
+  return '<div class="systems">' + SYSTEMS.map(s => {
+    const c = `var(--${s.k})`, t = `var(--${s.k}-t)`, b = `var(--${s.k}-b)`;
+    const nodes = s.steps.map((st, i) =>
+      (i ? ARROW(c, st.via) : '') +
+      `<div class="node" style="border-color:${b}"><div class="node-top"><b style="color:${c}">${i === 0 ? 'Start · fuel' : 'Step ' + (i + 1)}</b><span class="where" style="color:${c};border-color:${b}">${st.at}</span></div>${st.t}</div>`).join('');
+    return `<article class="sys" aria-label="${s.name}">
+      <div class="sys-head" style="background:${c}"><small>${s.tag}</small><strong>${s.name}</strong></div>
+      <div class="chain" style="background:${t};border-color:${b}">
+        ${nodes}
+        <div class="end">${ARROW(c, '')}<div class="atp" style="background:${c}"><small>ATP produced</small>${s.out}</div></div>
+      </div>
+    </article>`;
+  }).join('') + '</div>';
+}
+
+/* =========================================================
+   BUILD
+   ========================================================= */
+const ANSWERS = [];
+const STORE_KEY = 'sehs-atp-chain-dragdrop-v1';
+let state = { placed: {}, collapsed: false };
+try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && s.placed) state = Object.assign(state, s); } catch (e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+let n = 0;
+document.getElementById('page').innerHTML = pageHTML().replace(/\[\[(.+?)\]\]/g, (_, term) => {
+  ANSWERS.push(term);
+  return `<button type="button" class="blank" data-id="${n++}" aria-label="Empty space"></button>`;
+});
+// Word bank in alphabetical order (numbers first, ignoring capitals)
+const ORDER = [...new Set(ANSWERS)].sort((a, b) => a.localeCompare(b, 'en', { numeric: true, sensitivity: 'base' }));
+
+const answerOf = id => ANSWERS[+id];
+const blanks = () => document.querySelectorAll('#page .blank');
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function remaining() {
+  const counts = {};
+  ANSWERS.forEach(t => counts[t] = (counts[t] || 0) + 1);
+  Object.values(state.placed).forEach(t => counts[t]--);
+  return counts;
+}
+
+function renderBank() {
+  const counts = remaining(), box = document.getElementById('chips');
+  box.innerHTML = '';
+  let left = 0;
+  ORDER.forEach(t => {
+    const k = counts[t] || 0;
+    if (k <= 0) return;
+    left += k;
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip' + (selected === t ? ' sel' : ''); b.dataset.term = t;
+    b.innerHTML = esc(t) + (k > 1 ? `<span class="n" aria-label="${k} left">×${k}</span>` : '');
+    box.appendChild(b);
+  });
+  if (!left) box.innerHTML = '<span class="done-msg">All terms placed. Press “Check answers”.</span>';
+  if (selected && !(counts[selected] > 0)) setSelected(null);
+}
+
+function renderBlanks() {
+  blanks().forEach(el => {
+    const t = state.placed[el.dataset.id];
+    el.textContent = t || '';
+    el.dataset.term = t || '';
+    el.classList.toggle('filled', !!t);
+    el.setAttribute('aria-label', t ? `Filled with ${t}. Activate to remove.` : 'Empty space');
+  });
+}
+
+function renderScore(text, full) {
+  const s = document.getElementById('score');
+  s.textContent = text || `${Object.keys(state.placed).length} / ${ANSWERS.length} placed`;
+  s.classList.toggle('full', !!full);
+}
+
+function render() { renderBlanks(); renderBank(); renderScore(); setBankHeight(); }
+function clearMarks() { blanks().forEach(b => b.classList.remove('ok', 'bad', 'missing')); }
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+let selected = null;
+function setSelected(t) {
+  selected = t;
+  document.body.classList.toggle('selecting', !!t);
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('sel', c.dataset.term === t));
+}
+
+function place(id, term, fromId) {
+  if (fromId === id) return;
+  const existing = state.placed[id];
+  state.placed[id] = term;
+  if (fromId) { if (existing) state.placed[fromId] = existing; else delete state.placed[fromId]; }
+  clearMarks(); save(); renderBlanks(); renderBank(); renderScore();
+}
+
+function unplace(id) {
+  delete state.placed[id];
+  clearMarks(); save(); renderBlanks(); renderBank(); renderScore();
+}
+
+function check() {
+  let right = 0;
+  blanks().forEach(el => {
+    el.classList.remove('ok', 'bad', 'missing');
+    const t = state.placed[el.dataset.id];
+    if (!t) { el.classList.add('missing'); return; }
+    if (t === answerOf(el.dataset.id)) { el.classList.add('ok'); right++; } else el.classList.add('bad');
+  });
+  renderScore(`${right} / ${ANSWERS.length} correct`, right === ANSWERS.length);
+}
+
+document.getElementById('checkBtn').onclick = check;
+document.getElementById('clearWrongBtn').onclick = () => {
+  blanks().forEach(el => { const t = state.placed[el.dataset.id]; if (t && t !== answerOf(el.dataset.id)) delete state.placed[el.dataset.id]; });
+  clearMarks(); save(); render();
+};
+document.getElementById('resetBtn').onclick = () => {
+  if (!confirm('Clear every answer?')) return;
+  state.placed = {}; clearMarks(); save(); render();
+};
+document.getElementById('showBtn').onclick = () => {
+  if (!confirm('Fill in all the correct answers?')) return;
+  state.placed = {};
+  blanks().forEach(el => state.placed[el.dataset.id] = answerOf(el.dataset.id));
+  save(); render(); check();
+};
+document.getElementById('bankToggle').onclick = () => { state.collapsed = !state.collapsed; save(); setBankHeight(); };
+
+function setBankHeight() {
+  const bank = document.getElementById('bank'), tog = document.getElementById('bankToggle');
+  bank.classList.toggle('collapsed', state.collapsed);
+  tog.textContent = state.collapsed ? 'Show' : 'Hide';
+  tog.setAttribute('aria-expanded', !state.collapsed);
+  document.documentElement.style.setProperty('--bank-h', bank.offsetHeight + 'px');
+}
+window.addEventListener('resize', setBankHeight);
+
+/* =========================================================
+   TAP / CLICK (keyboard: Enter or Space)
+   ========================================================= */
+let suppressClick = false;
+document.addEventListener('click', e => {
+  if (suppressClick) { suppressClick = false; return; }
+  const chip = e.target.closest('.chip');
+  if (chip) { setSelected(selected === chip.dataset.term ? null : chip.dataset.term); return; }
+  const blank = e.target.closest('.blank');
+  if (blank) {
+    if (selected) { const t = selected; place(blank.dataset.id, t, null); setSelected(remaining()[t] > 0 ? t : null); }
+    else if (blank.classList.contains('filled')) unplace(blank.dataset.id);
+  }
+});
+
+/* =========================================================
+   DRAG AND DROP (pointer events: mouse, touch and pen)
+   ========================================================= */
+let drag = null, ghost = null, overEl = null, scrollRaf = null, lastY = 0;
+
+document.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  const src = e.target.closest('.chip, .blank.filled');
+  if (!src) return;
+  drag = { src, term: src.dataset.term, fromId: src.classList.contains('blank') ? src.dataset.id : null,
+           x0: e.clientX, y0: e.clientY, started: false };
+});
+
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (!drag.started) {
+    if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 6) return;
+    drag.started = true;
+    ghost = document.createElement('div'); ghost.className = 'ghost'; ghost.textContent = drag.term;
+    document.body.appendChild(ghost); document.body.classList.add('dragging');
+    setSelected(null);
+    lastY = e.clientY;
+    autoScroll();
+  }
+  e.preventDefault();
+  lastY = e.clientY;
+  // Only start auto-scrolling down once the term has been lifted clear of the word bank
+  if (lastY < document.getElementById('bank').getBoundingClientRect().top - 90) drag.cleared = true;
+  ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px';
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  const target = under && (under.closest('.blank') || under.closest('.bank'));
+  if (target !== overEl) {
+    if (overEl) overEl.classList.remove('over');
+    overEl = target;
+    if (overEl) overEl.classList.add('over');
+  }
+}, { passive: false });
+
+function endDrag(cancelled) {
+  if (!drag) return;
+  if (drag.started) {
+    suppressClick = true; setTimeout(() => suppressClick = false, 0);
+    if (!cancelled && overEl) {
+      if (overEl.classList.contains('blank')) place(overEl.dataset.id, drag.term, drag.fromId);
+      else if (drag.fromId) unplace(drag.fromId);
+    }
+    if (overEl) overEl.classList.remove('over');
+    ghost.remove(); ghost = null; overEl = null;
+    document.body.classList.remove('dragging');
+    cancelAnimationFrame(scrollRaf);
+  }
+  drag = null;
+}
+document.addEventListener('pointerup', () => endDrag(false));
+document.addEventListener('pointercancel', () => endDrag(true));
+
+function autoScroll() {
+  if (!drag || !drag.started) return;
+  const bankTop = document.getElementById('bank').getBoundingClientRect().top;
+  const edge = 70;
+  if (lastY < edge) window.scrollBy({ top: -14, behavior: 'instant' });
+  else if (drag.cleared && lastY > bankTop - edge && lastY < bankTop) window.scrollBy({ top: 14, behavior: 'instant' });
+  scrollRaf = requestAnimationFrame(autoScroll);
+}
+
+render();
+</script>
+</body>
+</html>
